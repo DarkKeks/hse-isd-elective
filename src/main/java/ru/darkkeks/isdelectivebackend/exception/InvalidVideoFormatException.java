@@ -1,4 +1,4 @@
-package ru.darkkeks.isdelectivebackend;
+package ru.darkkeks.isdelectivebackend.exception;
 
 public class InvalidVideoFormatException extends RuntimeException {
     private String formatName;

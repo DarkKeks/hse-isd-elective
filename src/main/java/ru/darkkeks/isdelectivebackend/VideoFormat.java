@@ -1,8 +1,13 @@
 package ru.darkkeks.isdelectivebackend;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum VideoFormat {
     FLV("flv", "flv", ".flv"),
-    MP4("mp4", "mp4", ".mp4");
+    MP4("mp4", "mp4", ".mp4"),
+    MKV("mkv", "matroska", ".mkv"),
+    MOV("mov", "mov", ".mov");
 
     private String name;
     private String encoderName;

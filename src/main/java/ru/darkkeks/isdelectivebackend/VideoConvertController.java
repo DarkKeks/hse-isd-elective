@@ -6,6 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.darkkeks.isdelectivebackend.exception.InvalidVideoFormatException;
+
+import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/convert")
@@ -18,6 +22,10 @@ public class VideoConvertController {
         this.videoConvertService = videoConvertService;
     }
 
+    @GetMapping("/formats")
+    public ResponseEntity supportedFormats() {
+        return ResponseEntity.ok(VideoFormat.values());
+    }
 
     @PostMapping(
             value = "/{targetFormatName}",
@@ -31,6 +39,8 @@ public class VideoConvertController {
         if (file == null) {
             throw new IllegalArgumentException("File not provided");
         }
-        return ResponseEntity.ok(new FileSystemResource(videoConvertService.convert(file, format)));
+
+        File result = videoConvertService.convertSync(file, format, 10, TimeUnit.SECONDS);
+        return ResponseEntity.ok(new FileSystemResource(result));
     }
 }
