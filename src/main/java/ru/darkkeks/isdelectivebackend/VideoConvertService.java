@@ -3,7 +3,6 @@ package ru.darkkeks.isdelectivebackend;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.darkkeks.isdelectivebackend.exception.VideoConvertTimeoutException;
 import ws.schild.jave.*;
 
 import java.io.File;
@@ -11,6 +10,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.*;
 
 @Service
@@ -22,14 +23,16 @@ public class VideoConvertService {
         this.executorService = executorService;
     }
 
-    public File convertSync(MultipartFile file, VideoFormat targetFormat, long timeLimit, TimeUnit unit) {
-        Future<File> future = convert(file, targetFormat);
+    public ConversionResult convertSync(MultipartFile file, VideoFormat targetFormat, long timeLimit, TimeUnit unit) {
+        Conversion conversion = new Conversion();
         try {
-            return future.get(timeLimit, unit);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new IllegalStateException("Something went wrong with conversion", e);
+            return conversion.finish(convert(file, targetFormat).get(timeLimit, unit));
+        } catch (InterruptedException exception) {
+            return conversion.error(exception);
+        } catch (ExecutionException exception) {
+            return conversion.error(exception.getCause());
         } catch (TimeoutException e) {
-            throw new VideoConvertTimeoutException();
+            return conversion.timeout();
         }
     }
 
@@ -56,6 +59,30 @@ public class VideoConvertService {
             });
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private static class Conversion {
+        private Instant start;
+
+        public Conversion() {
+            this.start = Instant.now();
+        }
+
+        public long getElapsedTime() {
+            return Duration.between(start, Instant.now()).toMillis();
+        }
+
+        public ConversionResult finish(File file) {
+            return new ConversionResult(file, ConversionResult.Status.OK, getElapsedTime(), null);
+        }
+
+        public ConversionResult timeout() {
+            return new ConversionResult(null, ConversionResult.Status.TIMEOUT, getElapsedTime(), null);
+        }
+
+        public ConversionResult error(Throwable e) {
+            return new ConversionResult(null, ConversionResult.Status.ERROR, getElapsedTime(), e);
         }
     }
 
