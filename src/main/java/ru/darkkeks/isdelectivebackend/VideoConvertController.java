@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.darkkeks.isdelectivebackend.exception.InvalidVideoFormatException;
+import ru.darkkeks.isdelectivebackend.exception.VideoConvertErrorException;
 import ru.darkkeks.isdelectivebackend.exception.VideoConvertTimeoutException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +66,7 @@ public class VideoConvertController {
         }
 
         if (status == ConversionResult.Status.ERROR) {
-            throw new RuntimeException(conversionResult.getException());
+            throw new VideoConvertErrorException(conversionResult.getException());
         }
 
         return ResponseEntity.ok(new FileSystemResource(conversionResult.getFile()));

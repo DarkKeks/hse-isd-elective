@@ -1,5 +1,6 @@
 package ru.darkkeks.isdelectivebackend;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,9 @@ import java.util.concurrent.*;
 @Service
 public class VideoConvertService {
 
-    private ScheduledExecutorService executorService;
+    private ExecutorService executorService;
 
-    public VideoConvertService(ScheduledExecutorService executorService) {
+    public VideoConvertService(@Qualifier("convert") ExecutorService executorService) {
         this.executorService = executorService;
     }
 
@@ -27,11 +28,13 @@ public class VideoConvertService {
         Conversion conversion = new Conversion();
         try {
             return conversion.finish(convert(file, targetFormat).get(timeLimit, unit));
+        } catch (RejectedExecutionException exception) {
+            return conversion.busy(exception);
         } catch (InterruptedException exception) {
             return conversion.error(exception);
         } catch (ExecutionException exception) {
             return conversion.error(exception.getCause());
-        } catch (TimeoutException e) {
+        } catch (TimeoutException exception) {
             return conversion.timeout();
         }
     }
@@ -83,6 +86,11 @@ public class VideoConvertService {
 
         public ConversionResult error(Throwable e) {
             return new ConversionResult(null, ConversionResult.Status.ERROR, getElapsedTime(), e);
+        }
+
+        public ConversionResult busy(Throwable e) {
+            return new ConversionResult(null, ConversionResult.Status.ERROR, getElapsedTime(),
+                    new IllegalStateException("Service is currently busy, try later", e));
         }
     }
 
