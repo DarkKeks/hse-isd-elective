@@ -1,0 +1,13 @@
+conversion:
+  maxConcurrentConversions: 2
+  timeLimitSeconds: 3
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost/app}
+server:
+  port: ${PORT:8080}
