@@ -71,9 +71,4 @@ public class VideoConvertController {
 
         return ResponseEntity.ok(new FileSystemResource(conversionResult.getFile()));
     }
-
-    @GetMapping("/get")
-    public Iterable<ConversionOperation> getAll() {
-        return repository.findAll();
-    }
 }
