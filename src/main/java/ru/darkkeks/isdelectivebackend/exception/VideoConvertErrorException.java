@@ -5,6 +5,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class VideoConvertErrorException extends RuntimeException {
+
+    public VideoConvertErrorException(String message) {
+        super(message);
+    }
+
     public VideoConvertErrorException(Throwable cause) {
         super(cause.getMessage(), cause);
     }

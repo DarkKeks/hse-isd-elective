@@ -49,7 +49,7 @@ public class VideoConvertController {
         }
 
         if (file == null) {
-            throw new IllegalArgumentException("File not provided");
+            throw new VideoConvertErrorException("File not provided");
         }
 
         ConversionResult conversionResult = videoConvertService.convertSync(file, format,
