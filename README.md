@@ -1,5 +1,7 @@
 # Бэкенд сервиса конвертации видео форматов.
 
+[![Build Status](https://travis-ci.com/DarkKeks/hse-isd-elective.svg?branch=master)](https://travis-ci.com/DarkKeks/hse-isd-elective)
+
 Задание факкультатива [Методы разработки программного обеспечения](http://wiki.cs.hse.ru/ISDElective)
 
 Веб фреймворк &mdash; Spring MVC, для конвертации используется обертка над ffmpeg &mdash; [Jave2](https://github.com/a-schild/jave2), для хранения лога операций используется mongodb
