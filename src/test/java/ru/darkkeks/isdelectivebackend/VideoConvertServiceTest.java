@@ -1,12 +1,13 @@
 package ru.darkkeks.isdelectivebackend;
 
-import org.junit.Test;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ws.schild.jave.EncoderException;
 
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class VideoConvertServiceTest {
 
     private static final String EXAMPLE_FILES_DIRECTORY = "example-files";

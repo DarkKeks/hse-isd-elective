@@ -1,4 +1,5 @@
 services:
   - docker
 script:
-  - docker build .
+  - docker build -f Dockerfile.test -t isd-elective .
+  - docker run isd-elective

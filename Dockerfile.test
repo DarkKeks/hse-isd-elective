@@ -1,0 +1,21 @@
+FROM openjdk:11-jdk-slim
+WORKDIR /build/
+
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip ffmpeg && \
+    pip3 install ffmpeg-python
+
+COPY example-files /build/example-files
+RUN cd example-files && python3 generate_test_samples.py sample.mp4
+
+# Run gradlew with only wrapper files to cache binary
+COPY gradlew /build/
+COPY gradle /build/gradle
+RUN ./gradlew --version
+
+# Cache dependencies
+COPY build.gradle settings.gradle /build/
+RUN ./gradlew build -x test --no-daemon || return 0
+
+COPY . /build
+CMD ./gradlew test --no-daemon

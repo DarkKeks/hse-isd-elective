@@ -8,10 +8,10 @@ RUN ./gradlew --version
 
 # Cache dependencies
 COPY build.gradle settings.gradle /build/
-RUN ./gradlew build --no-daemon || return 0
+RUN ./gradlew build -x test --no-daemon || return 0
 
 COPY . /build
-RUN ./gradlew build --no-daemon
+RUN ./gradlew build -x test --no-daemon
 
 
 FROM openjdk:11-jdk-slim

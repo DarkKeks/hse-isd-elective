@@ -20,4 +20,4 @@ for file in source_files:
     filename, ext = os.path.splitext(file)
     for format in formats:
         for size, size_name, result in sizes:
-            ffmpeg.input(file).output(f"{filename}_{result}_{size_name}.{format['extension']}", fs=size).run()
+            ffmpeg.input(file).output(f"{filename}_{result}_{size_name}.{format['extension']}", fs=size).overwrite_output().run()
