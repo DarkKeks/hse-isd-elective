@@ -24,7 +24,7 @@ public class IsdElectiveBackendConfiguration {
                 conversionProperties.getMaxConcurrentConversions(),
                 conversionProperties.getMaxConcurrentConversions(),
                 0, TimeUnit.SECONDS,
-                new SynchronousQueue<>(), //
+                new SynchronousQueue<>(),
                 new ThreadPoolExecutor.AbortPolicy()
         );
     }

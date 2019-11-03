@@ -1,0 +1,3 @@
+conversion:
+  maxConcurrentConversions: 2
+  timeLimitSeconds: 5
